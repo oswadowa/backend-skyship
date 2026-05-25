@@ -6,9 +6,14 @@ const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
-// Configurar CORS para aceptar el frontend
+// Configurar CORS para aceptar el frontend (IP pública y local)
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://localhost:3001'],
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://54.221.122.67:3001',  // ← Agrega la IP de tu frontend
+    'http://54.221.122.67:3000'
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
@@ -26,8 +31,6 @@ app.use('/api/admin', adminRoutes);
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
-
-module.exports = app;
 
 // Endpoint para probar la base de datos
 app.get('/api/test-db', async (req, res) => {
@@ -48,6 +51,7 @@ app.get('/api/test-db', async (req, res) => {
     });
   }
 });
+
 app.get('/api/ver-usuarios', async (req, res) => {
   try {
     const { allQuery } = require('./config/database');
@@ -60,3 +64,5 @@ app.get('/api/ver-usuarios', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+module.exports = app;
